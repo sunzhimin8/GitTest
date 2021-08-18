@@ -3,15 +3,20 @@ package com.szm.gittest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TableLayout;
 import android.widget.Toast;
+
+import java.util.HashMap;
 
 public class DBActivity extends AppCompatActivity {
     private  DBHelper db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +39,9 @@ public class DBActivity extends AppCompatActivity {
      * 更新库
      */
     public void testUpdateDB(View v) {
+
         DBHelper db2=new DBHelper(this,"szm.db",2);
+
         db2.getReadableDatabase();
 
 
@@ -44,6 +51,26 @@ public class DBActivity extends AppCompatActivity {
      * 添加记录
      */
     public void testInsert(View v) {
+        //1.得到连接
+        db=new DBHelper(this,"szm.db",2);
+        SQLiteDatabase sqLiteDatabase=db.getReadableDatabase();
+
+        //2插入数据
+        ContentValues values=new ContentValues();
+        values.put("name","xiaoming");
+        values.put("age",100);
+
+        long id= sqLiteDatabase.insert("person",null,values);
+
+        //3关闭数据库
+
+        sqLiteDatabase.close();
+
+        String strID=String.valueOf(id);
+
+        Toast.makeText(this,"ID="+id+"==="+strID,Toast.LENGTH_SHORT).show();
+
+
 
     }
 
@@ -51,7 +78,19 @@ public class DBActivity extends AppCompatActivity {
      * 更新
      */
     public void testUpdate(View v) {
+      DBHelper dbHelper=new DBHelper(this,"szm.db",2);
+      SQLiteDatabase database=dbHelper.getReadableDatabase();
 
+      ContentValues  values=new ContentValues();
+      values.put("name","你好");
+      values.put("age",88);
+
+        Log.e("TAG", "testUpdate: begin");
+        int num = database.update("person",values,"_id > 1",null );
+        Log.e("TAG", "testUpdate: end");
+         database.close();
+
+        Toast.makeText(this,String.valueOf(num), Toast.LENGTH_SHORT).show();
     }
 
     /*
